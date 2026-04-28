@@ -140,6 +140,27 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+class Score:
+    def __init__(self):
+        """
+        スコアに関するクラス
+        """
+        self.fonto = pg.font.SysFont(None, 30)
+        self.color = (0, 0, 255) # 文字の色を青に
+        self.score = 0 #スコアの初期値を0に
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        self.rct = self.img.get_rect()
+        self.rct.center = (100, HEIGHT-50) # スコアを表示する位置を設定
+
+    def update(self, screen: pg.Surface):
+        """
+        爆弾を破壊した時にスコアを変化させる
+        引数 screen：画面Surface
+        """
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        screen.blit(self.img, self.rct)
+
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -148,6 +169,8 @@ def main():
     bird = Bird((300, 200))
     # bomb = Bomb((255, 0, 0), 10)
     bombs = []
+    score_label = Score() # 表示するスコアを格納する
+
     for i in range (NUM_OF_BOMBS):
         bomb = Bomb((255, 0, 0), 10)
         bombs.append(bomb)
@@ -178,11 +201,12 @@ def main():
         for i, bomb in enumerate(bombs):
             if beam is not None:
                 if beam.rct.colliderect(bomb.rct): #練習2: 爆弾とビームの衝突判定
+                    score_label.score += 1 #　スコアを1点追加　
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen) #練習3: こうかとん喜びエフェクト
                     pg.display.update()
-                    time.sleep(1)
+                    # time.sleep(1)
 
         bombs = [bomb for bomb in bombs if bomb is not None]
 
@@ -192,6 +216,7 @@ def main():
             beam.update(screen)   
         for bomb in bombs:
             bomb.update(screen)
+        score_label.update(screen) #スコアを更新
         pg.display.update()
         tmr += 1
         clock.tick(50)
