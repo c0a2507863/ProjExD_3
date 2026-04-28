@@ -140,6 +140,7 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+
 class Score:
     def __init__(self):
         """
@@ -159,7 +160,6 @@ class Score:
         """
         self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
         screen.blit(self.img, self.rct)
-
 
 
 def main():
